@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IALAB UCE — Inteligencia Artificial Responsable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1B3A5C;--navy-dark:#0d2540;--teal:#2E7D8F;--teal-light:#3BA8BF;
+  --amber:#C07A1A;--amber-light:#FEF3C7;--green:#16A34A;--green-light:#DCFCE7;
+  --white:#FFFFFF;--gray-700:#374151;--gray-500:#6B7280;--gray-200:#E5E8EF;--gray-100:#F3F6FA;
+  --font-d:'Space Grotesk',sans-serif;--font-b:'Inter',sans-serif;
+  --radius:14px;--shadow:0 4px 24px rgba(27,58,92,.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-b);background:#F0F5FA;color:var(--gray-700);min-height:100vh;overflow-x:hidden}
+
+/* ── KEYFRAMES ── */
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes iconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(59,168,191,.3)}50%{box-shadow:0 0 0 8px rgba(59,168,191,0)}}
+@keyframes scrollAnim{0%{top:-100%}100%{top:200%}}
+@keyframes barGrow{from{width:0}to{width:var(--w)}}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes glowPop{0%{transform:scale(.8);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(13,37,64,.97);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;height:52px;border-bottom:1px solid rgba(255,255,255,.07)}
+.nav-brand{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.nav-logo{width:28px;height:28px;border-radius:7px;background:var(--teal);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:11px;font-weight:700;color:#fff}
+.nav-name{font-family:var(--font-d);font-size:13px;font-weight:600;color:#fff}
+.nav-links{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-btn{white-space:nowrap;padding:5px 11px;border:none;background:none;font-family:var(--font-b);font-size:11.5px;font-weight:500;color:rgba(255,255,255,.5);cursor:pointer;border-radius:6px;transition:all .18s;display:flex;align-items:center;gap:5px;height:52px}
+.nav-btn:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-btn.active{background:rgba(59,168,191,.18);color:var(--teal-light)}
+.nb-num{width:17px;height:17px;border-radius:50%;background:rgba(255,255,255,.1);color:rgba(255,255,255,.45);font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s}
+.nav-btn.active .nb-num{background:rgba(59,168,191,.3);color:var(--teal-light)}
+
+/* ── PAGE SYSTEM ── */
+.page{display:none}
+.page.active{display:block;animation:fadeUp .3s ease both}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 2rem 5rem;position:relative;overflow:hidden;background:linear-gradient(160deg,#0a1e35 0%,#1B3A5C 50%,#1d4a5e 100%)}
+#hero-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.5}
+.hero-content{position:relative;z-index:2;text-align:center;max-width:760px}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(46,125,143,.2);border:1px solid rgba(59,168,191,.3);color:#7dd3e8;font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:1.2rem}
+.hero-badge span{width:6px;height:6px;border-radius:50%;background:#3BA8BF;animation:blink 2s infinite}
+.hero h1{font-family:var(--font-d);font-size:clamp(38px,7vw,76px);font-weight:800;color:#fff;line-height:1;letter-spacing:-0.02em;margin-bottom:.5rem}
+.hero h1 em{color:var(--teal-light);font-style:normal}
+.hero-sub{font-size:clamp(14px,2vw,17px);color:rgba(255,255,255,.55);margin-bottom:.8rem;line-height:1.7;font-weight:300;max-width:620px;margin-left:auto;margin-right:auto}
+.hero-quote{display:inline-block;font-size:14px;font-style:italic;color:rgba(255,255,255,.45);border-left:3px solid var(--teal-light);padding-left:12px;margin:1rem 0 2rem;text-align:left}
+.hero-ctas{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:1.2rem}
+.hero-pills{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
+.pill-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);color:rgba(255,255,255,.65);font-size:11.5px;padding:5px 13px;border-radius:100px;cursor:pointer;font-family:var(--font-b);transition:all .2s}
+.pill-btn:hover{background:rgba(59,168,191,.18);border-color:rgba(59,168,191,.4);color:#7dd3e8;transform:translateY(-1px)}
+.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;color:rgba(255,255,255,.25);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.scroll-dot{width:4px;height:22px;border-radius:2px;background:rgba(255,255,255,.12);position:relative;overflow:hidden}
+.scroll-dot::after{content:'';position:absolute;top:-100%;left:0;right:0;height:50%;background:var(--teal-light);border-radius:2px;animation:scrollAnim 2s ease-in-out infinite}
+
+/* ── STATS BAR ── */
+.stats-bar{background:var(--navy);border-radius:var(--radius);display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));overflow:hidden}
+.stat-item{padding:1.6rem 1rem;border-right:1px solid rgba(255,255,255,.07);text-align:center}
+.stat-item:last-child{border-right:none}
+.stat-n{font-family:var(--font-d);font-size:30px;font-weight:800;color:var(--teal-light);display:block;line-height:1}
+.stat-l{font-size:10.5px;color:rgba(255,255,255,.4);margin-top:.3rem;line-height:1.4}
+
+/* ── LAYOUT ── */
+.page-inner{max-width:1080px;margin:0 auto;padding:4rem 1.8rem}
+.bg-alt{background:var(--gray-100)}
+.sec-eyebrow{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);margin-bottom:.45rem}
+.sec-title{font-family:var(--font-d);font-size:clamp(20px,3.2vw,32px);font-weight:700;color:var(--navy);margin-bottom:.7rem;line-height:1.2}
+.sec-desc{font-size:14px;color:var(--gray-500);line-height:1.75;max-width:620px;margin-bottom:1.8rem}
+
+/* ── BUTTONS ── */
+.btn-p{background:var(--teal);color:#fff;font-size:13px;font-weight:500;padding:10px 24px;border-radius:100px;border:none;cursor:pointer;font-family:var(--font-b);transition:background .18s,transform .12s;display:inline-block;text-decoration:none}
+.btn-p:hover{background:var(--teal-light);transform:translateY(-1px)}
+.btn-g{background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);font-size:13px;font-weight:400;padding:10px 24px;border-radius:100px;border:1px solid rgba(255,255,255,.14);cursor:pointer;font-family:var(--font-b);transition:background .18s;display:inline-block;text-decoration:none}
+.btn-g:hover{background:rgba(255,255,255,.14)}
+.btn-next{margin-top:2.5rem;display:flex;justify-content:flex-end}
+
+/* ── CARD BASE ── */
+.card{background:#fff;border-radius:var(--radius);border:1px solid var(--gray-200);padding:1.3rem 1.5rem;box-shadow:var(--shadow);transition:box-shadow .18s}
+.card:hover{box-shadow:0 6px 28px rgba(27,58,92,.12)}
+.card-navy{background:var(--navy);color:#fff;border-color:var(--navy)}
+.card-teal{background:#EDF8FB;border-color:rgba(59,168,191,.3)}
+.card-amber{background:#FFFBEB;border-color:#FDE68A}
+.card-green{background:var(--green-light);border-color:#BBF7D0}
+
+/* ── ANTECEDENTES ── */
+.ant-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:2rem}
+.ant-card{background:#fff;border-radius:12px;border:1px solid var(--gray-200);padding:1.1rem 1.2rem;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden}
+.ant-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--teal)}
+.ant-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.ant-icon{font-size:22px;margin-bottom:.5rem;display:block}
+.ant-title{font-family:var(--font-d);font-size:13px;font-weight:600;color:var(--navy);margin-bottom:.3rem}
+.ant-text{font-size:12px;color:var(--gray-500);line-height:1.6}
+.ant-badge{display:inline-block;background:var(--green-light);color:#15803D;font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;margin-top:.5rem;border:1px solid #BBF7D0}
+
+/* ── YA EXISTE / FALTA ── */
+.existe-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:1.5rem}
+.existe-table th{text-align:left;padding:9px 14px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-500);border-bottom:2px solid var(--gray-200)}
+.existe-table td{padding:9px 14px;border-bottom:1px solid var(--gray-200);vertical-align:top;line-height:1.55}
+.existe-table td:first-child{color:var(--navy);font-weight:500}
+.existe-table td:last-child{color:var(--teal);font-weight:500}
+.existe-table tr:last-child td{border-bottom:none}
+.existe-table tr:hover td{background:#F8FAFC}
+.col-check{color:var(--green)}
+.col-arrow{color:var(--teal)}
+
+/* ── PROBLEMA ── */
+.prob-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:1.8rem}
+.prob-card{background:#fff;border-radius:var(--radius);border:1px solid var(--gray-200);padding:1.2rem 1.3rem;transition:box-shadow .18s,transform .15s}
+.prob-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.prob-num{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--amber);color:#fff;font-size:10px;font-weight:700;align-items:center;justify-content:center;margin-bottom:.5rem}
+.prob-title{font-family:var(--font-d);font-size:13px;font-weight:600;color:var(--navy);margin-bottom:.3rem}
+.prob-text{font-size:12px;color:var(--gray-500);line-height:1.6}
+
+/* ── SOLUCION / PIPELINE ── */
+.pipeline{display:flex;align-items:stretch;gap:0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--gray-200);margin:1.8rem 0}
+.pipe-step{flex:1;padding:1.1rem .8rem;text-align:center;cursor:pointer;position:relative;transition:filter .18s;border-right:1px solid rgba(255,255,255,.1)}
+.pipe-step:last-child{border-right:none}
+.pipe-step:hover{filter:brightness(1.12)}
+.pipe-step.active{filter:brightness(1.18)}
+.pipe-step.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.5)}
+.pipe-num{font-family:var(--font-d);font-size:22px;font-weight:800;color:#fff;line-height:1}
+.pipe-icon{font-size:18px;margin:.2rem 0}
+.pipe-lbl{font-size:9.5px;font-weight:500;color:rgba(255,255,255,.7);line-height:1.3;margin-top:.2rem}
+.pipe-detail{background:var(--navy);border-radius:var(--radius);padding:1.3rem 1.5rem;margin-top:4px;display:none;animation:fadeUp .2s ease}
+.pipe-detail.show{display:block}
+.pipe-detail h4{font-family:var(--font-d);font-size:15px;font-weight:600;color:#fff;margin-bottom:.4rem}
+.pipe-detail p{font-size:13px;color:rgba(255,255,255,.7);line-height:1.65}
+
+/* ── COMPONENTES ── */
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:1.8rem}
+.comp-card{background:#fff;border-radius:var(--radius);border:1px solid var(--gray-200);padding:1.2rem;cursor:pointer;transition:border-color .18s,box-shadow .18s,transform .15s;position:relative;overflow:hidden}
+.comp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--teal);transform:scaleX(0);transform-origin:left;transition:transform .25s}
+.comp-card:hover::before,.comp-card.active::before{transform:scaleX(1)}
+.comp-card:hover{border-color:var(--teal);box-shadow:0 6px 28px rgba(46,125,143,.12);transform:translateY(-3px)}
+.comp-card.active{border-color:var(--teal);background:#EDF8FB}
+.comp-num-badge{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;font-size:11px;font-weight:700;align-items:center;justify-content:center;margin-bottom:.5rem;transition:background .18s}
+.comp-card.active .comp-num-badge{background:var(--teal)}
+.comp-icon{font-size:22px;margin-bottom:.4rem;display:block}
+.comp-title{font-family:var(--font-d);font-size:13px;font-weight:600;color:var(--navy);margin-bottom:.3rem;line-height:1.3}
+.comp-text{font-size:11.5px;color:var(--gray-500);line-height:1.6}
+.comp-panel{grid-column:1/-1;background:var(--navy);border-radius:var(--radius);padding:1.5rem 1.8rem;display:none;animation:fadeUp .2s ease;margin-top:2px}
+.comp-panel.show{display:block}
+.comp-panel h3{font-family:var(--font-d);font-size:16px;margin-bottom:.4rem;color:#fff}
+.comp-panel p{font-size:13px;color:rgba(255,255,255,.72);line-height:1.7;max-width:680px;margin-bottom:.8rem}
+.comp-panel .tags{display:flex;flex-wrap:wrap;gap:5px}
+.comp-panel .tag{font-size:11px;color:var(--teal-light);background:rgba(59,168,191,.15);border:1px solid rgba(59,168,191,.25);padding:2px 9px;border-radius:100px}
+
+/* ── ODS ── */
+.ods-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:1.8rem}
+.ods-card{border-radius:var(--radius);padding:1.2rem;border:none;position:relative;overflow:hidden}
+.ods-main{background:linear-gradient(135deg,#1B3A5C 0%,#2E7D8F 100%);color:#fff}
+.ods-comp{background:#fff;border:1px solid var(--gray-200)}
+.ods-num{font-family:var(--font-d);font-size:38px;font-weight:800;opacity:.15;position:absolute;top:-.3rem;right:.5rem;line-height:1}
+.ods-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem}
+.ods-main .ods-label{color:var(--teal-light)}
+.ods-comp .ods-label{color:var(--teal)}
+.ods-title{font-family:var(--font-d);font-size:15px;font-weight:700;margin-bottom:.4rem}
+.ods-main .ods-title{color:#fff}
+.ods-comp .ods-title{color:var(--navy)}
+.ods-desc{font-size:12px;line-height:1.6}
+.ods-main .ods-desc{color:rgba(255,255,255,.7)}
+.ods-comp .ods-desc{color:var(--gray-500)}
+
+/* IF CRITERIA */
+.if-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:1.8rem}
+.if-card{background:#fff;border-radius:var(--radius);border:1px solid var(--gray-200);padding:1.1rem 1.2rem;transition:box-shadow .18s}
+.if-card:hover{box-shadow:var(--shadow)}
+.if-icon{font-size:22px;margin-bottom:.5rem;display:block}
+.if-criterion{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);margin-bottom:.3rem}
+.if-title{font-family:var(--font-d);font-size:13px;font-weight:600;color:var(--navy);margin-bottom:.3rem}
+.if-text{font-size:12px;color:var(--gray-500);line-height:1.6}
+
+/* ── ORBIT ── */
+.orbit-hint{font-size:12px;color:var(--gray-500);display:flex;align-items:center;gap:5px;margin-bottom:.5rem}
+.orbit-num-ring{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:1rem 0}
+.orbit-num-btn{width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;font-family:var(--font-b);font-size:12px;font-weight:700;border:2px solid var(--gray-200);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s}
+.orbit-num-btn:hover{background:var(--teal);border-color:var(--teal-light);transform:scale(1.1)}
+.orbit-num-btn.active{background:var(--teal);border-color:var(--teal-light);transform:scale(1.12);box-shadow:0 0 0 4px rgba(59,168,191,.2)}
+#orbit-canvas{width:100%;height:480px;cursor:pointer;display:block}
+.orbit-detail{background:#fff;border-radius:var(--radius);border:1px solid var(--gray-200);padding:1.3rem 1.5rem;box-shadow:var(--shadow);transition:all .2s;margin-top:1rem}
+.orbit-detail.has-content{border-color:var(--teal-light);border-width:1.5px}
+.orbit-detail h3{font-family:var(--font-d);font-size:15px;font-weight:600;color:var(--navy);margin-bottom:.3rem}
+.orbit-detail p{font-size:13px;color:var(--gray-500);line-height:1.65;margin-bottom:.7rem}
+.orbit-detail .tags{display:flex;flex-wrap:wrap;gap:5px}
+.orbit-detail .tag{font-size:11px;color:var(--teal);background:rgba(46,125,143,.08);border:1px solid rgba(46,125,143,.2);padding:2px 9px;border-radius:100px}
+
+/* ── BENEFICIARIOS ── */
+.benef-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;margin-top:1.8rem}
+.benef-card{background:#fff;border-radius:var(--radius);padding:1.2rem;border:1px solid var(--gray-200);text-align:center;transition:transform .18s,box-shadow .18s}
+.benef-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.benef-icon{font-size:28px;margin-bottom:.5rem;display:block;animation:iconFloat 3s ease-in-out infinite}
+.benef-card:nth-child(2) .benef-icon{animation-delay:.5s}
+.benef-card:nth-child(3) .benef-icon{animation-delay:1s}
+.benef-card:nth-child(4) .benef-icon{animation-delay:1.5s}
+.benef-card:nth-child(5) .benef-icon{animation-delay:2s}
+.benef-card:nth-child(6) .benef-icon{animation-delay:2.5s}
+.benef-title{font-family:var(--font-d);font-size:13px;font-weight:600;color:var(--navy);margin-bottom:.3rem}
+.benef-text{font-size:11.5px;color:var(--gray-500);line-height:1.6}
+
+/* ── FINANCIAMIENTO ── */
+.fin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:1.8rem}
+.fin-card{background:#fff;border-radius:var(--radius);border:1px solid var(--gray-200);padding:1.2rem;transition:box-shadow .18s,transform .15s}
+.fin-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.fin-icon{font-size:21px;margin-bottom:.4rem;display:block}
+.fin-title{font-family:var(--font-d);font-size:13px;font-weight:600;color:var(--navy);margin-bottom:.3rem}
+.fin-text{font-size:12px;color:var(--gray-500);line-height:1.6}
+
+/* ── IMPACTO / INDICADORES ── */
+.ind-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:1.8rem}
+.ind-card{background:#fff;border-radius:var(--radius);border:1px solid var(--gray-200);padding:1.1rem}
+.ind-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.6rem}
+.ind-item{font-size:12px;color:var(--gray-500);padding:4px 0 4px 12px;border-bottom:1px solid var(--gray-200);position:relative;line-height:1.5}
+.ind-item:last-child{border-bottom:none}
+.ind-item::before{content:'↗';position:absolute;left:0;color:var(--teal-light);font-size:10px}
+
+/* ── FASES TIMELINE ── */
+.timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:1.8rem;position:relative}
+.timeline::before{content:'';position:absolute;top:26px;left:16%;right:16%;height:2px;background:linear-gradient(90deg,var(--teal),var(--navy));z-index:0}
+.tl-item{text-align:center;position:relative;z-index:1;padding:0 .8rem}
+.tl-dot{width:52px;height:52px;border-radius:50%;background:var(--navy);border:3px solid var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;margin:0 auto 1rem;font-family:var(--font-d);cursor:pointer;transition:all .2s}
+.tl-dot:hover,.tl-item.active .tl-dot{background:var(--teal);transform:scale(1.1)}
+.tl-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);margin-bottom:.4rem}
+.tl-title{font-family:var(--font-d);font-size:15px;font-weight:600;color:var(--navy);margin-bottom:.6rem}
+.tl-list{list-style:none;text-align:left}
+.tl-list li{font-size:12px;color:var(--gray-500);padding:3px 0 3px 12px;position:relative;line-height:1.5}
+.tl-list li::before{content:'–';position:absolute;left:0;color:var(--teal)}
+.fase-detail-box{background:var(--navy);border-radius:var(--radius);padding:1.3rem 1.6rem;color:#fff;margin-top:1.4rem;display:none;animation:fadeUp .25s ease}
+
+/* ── DISEÑO ── */
+.diseno-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:10px;margin-top:1.8rem}
+.diseno-card{background:#fff;border-radius:var(--radius);border:1px solid var(--gray-200);padding:1.1rem 1.2rem;transition:box-shadow .18s}
+.diseno-card:hover{box-shadow:var(--shadow)}
+.diseno-icon{font-size:22px;margin-bottom:.5rem;display:block}
+.diseno-title{font-family:var(--font-d);font-size:13px;font-weight:600;color:var(--navy);margin-bottom:.3rem}
+.diseno-text{font-size:12px;color:var(--gray-500);line-height:1.6}
+
+/* ── CLOSING ── */
+.closing{background:linear-gradient(135deg,var(--navy) 0%,#0d2540 100%);border-radius:var(--radius);padding:2.8rem;text-align:center;color:#fff;margin-top:2rem}
+.closing h2{font-family:var(--font-d);font-size:clamp(17px,2.8vw,24px);font-weight:700;margin-bottom:.5rem;line-height:1.3}
+.closing p{font-size:14px;color:rgba(255,255,255,.58);max-width:500px;margin:0 auto 1.5rem;line-height:1.7}
+
+/* ── TESIS BOX ── */
+.tesis-box{background:linear-gradient(135deg,var(--teal) 0%,var(--navy) 100%);border-radius:var(--radius);padding:1.6rem 1.8rem;color:#fff;margin-bottom:2rem}
+.tesis-box p{font-size:14px;line-height:1.75;color:rgba(255,255,255,.9)}
+.tesis-box strong{color:#fff}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ── FOOTER ── */
+footer{background:#0d2540;text-align:center;padding:1.6rem;font-size:11px;color:rgba(255,255,255,.28)}
+
+@media(max-width:680px){
+  .timeline{grid-template-columns:1fr;gap:2rem}.timeline::before{display:none}
+  .nav-links{max-width:calc(100vw - 120px)}.hero h1{font-size:42px}
+  .pipe-lbl{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-logo">IA</div>
+    <span class="nav-name">IALAB UCE</span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="go('home',this)"><span class="nb-num">●</span>Inicio</button>
+    <button class="nav-btn" onclick="go('antecedentes',this)"><span class="nb-num">1</span>Antecedentes</button>
+    <button class="nav-btn" onclick="go('problema',this)"><span class="nb-num">2</span>Problema</button>
+    <button class="nav-btn" onclick="go('solucion',this)"><span class="nb-num">3</span>Solución</button>
+    <button class="nav-btn" onclick="go('componentes',this)"><span class="nb-num">4</span>Componentes</button>
+    <button class="nav-btn" onclick="go('ods',this)"><span class="nb-num">5</span>ODS · iF</button>
+    <button class="nav-btn" onclick="go('financiamiento',this)"><span class="nb-num">6</span>Financiamiento</button>
+    <button class="nav-btn" onclick="go('impacto',this)"><span class="nb-num">7</span>Impacto</button>
+    <button class="nav-btn" onclick="go('fases',this)"><span class="nb-num">8</span>Fases</button>
+    <button class="nav-btn" onclick="go('cierre',this)"><span class="nb-num">9</span>Cierre</button>
+  </div>
+</nav>
+
+<!-- ═══════════════ INICIO ═══════════════ -->
+<div id="page-home" class="page active">
+<div class="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge"><span></span>Vicerrectorado Académico y de Posgrado · UCE · 2025–2026</div>
+    <h1>IALAB <em>UCE</em></h1>
+    <p class="hero-sub">Laboratorio institucional físico-digital para convertir la política, la formación y el diagnóstico de IA de la UCE en capacidades reales para la docencia, la investigación y la innovación pública.</p>
+    <span class="hero-quote">De la política a la práctica: IA responsable para transformar la educación superior pública.</span>
+    <div class="hero-ctas">
+      <button class="btn-p" onclick="go('antecedentes',document.querySelectorAll('.nav-btn')[1])">Explorar el proyecto →</button>
+      <button class="btn-g" onclick="go('componentes',document.querySelectorAll('.nav-btn')[4])">Ver componentes</button>
+    </div>
+    <div class="hero-pills">
+      <button class="pill-btn" onclick="go('antecedentes',document.querySelectorAll('.nav-btn')[1])">🏛 Antecedentes institucionales</button>
+      <button class="pill-btn" onclick="go('solucion',document.querySelectorAll('.nav-btn')[3])">🔬 Solución IALAB UCE</button>
+      <button class="pill-btn" onclick="go('ods',document.querySelectorAll('.nav-btn')[5])">🌍 ODS y criterios iF</button>
+      <button class="pill-btn" onclick="go('impacto',document.querySelectorAll('.nav-btn')[7])">📊 Indicadores de impacto</button>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-dot"></div>Explorar</div>
+</div>
+
+<div style="background:var(--gray-100);padding:3rem 1.8rem">
+<div style="max-width:1080px;margin:0 auto">
+  <div class="sec-eyebrow">El proyecto en cifras</div>
+  <h2 class="sec-title">IALAB UCE de un vistazo</h2>
+  <p class="sec-desc">La UCE ya inició. IALAB UCE es la fase de implementación: capacidad instalada para toda la institución.</p>
+  <div class="stats-bar">
+    <div class="stat-item"><span class="stat-n" data-target="3">0</span><div class="stat-l">Instrumentos institucionales de IA</div></div>
+    <div class="stat-item"><span class="stat-n" data-target="1">0</span><div class="stat-l">Comisión de IA VAP-UCE</div></div>
+    <div class="stat-item"><span class="stat-n" data-target="1">0</span><div class="stat-l">Maestría en IA y Ciencia de Datos</div></div>
+    <div class="stat-item"><span class="stat-n" data-target="8">0</span><div class="stat-l">Componentes estratégicos</div></div>
+    <div class="stat-item"><span class="stat-n" data-target="3">0</span><div class="stat-l">Fases de implementación</div></div>
+  </div>
+
+  <!-- TESIS CENTRAL -->
+  <div class="tesis-box" style="margin-top:2rem">
+    <p><strong>La UCE ya inició el proceso de institucionalización de la IA</strong> mediante comisión técnica, capacitación masiva, diagnóstico, política institucional, código de ética, lineamientos académicos y posgrado en IA. <strong>IALAB UCE es la fase de implementación:</strong> laboratorio, licencias, equipos, plataforma, formación continua, apoyo a investigación, pilotos e indicadores de impacto.</p>
+  </div>
+
+  <div class="btn-next">
+    <button class="btn-p" onclick="go('antecedentes',document.querySelectorAll('.nav-btn')[1])">Ver antecedentes institucionales →</button>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════ 1. ANTECEDENTES ═══════════════ -->
+<div id="page-antecedentes" class="page" style="padding-top:52px;min-height:100vh;background:var(--gray-100)">
+<div class="page-inner">
+  <div class="sec-eyebrow reveal">Base institucional existente</div>
+  <h2 class="sec-title reveal">Antecedentes institucionales</h2>
+  <p class="sec-desc reveal">La UCE ya cuenta con una base institucional avanzada. IALAB UCE propone convertir estos avances en capacidad instalada permanente.</p>
+
+  <div class="ant-grid" id="ant-grid"></div>
+
+  <!-- QUE EXISTE VS QUE FALTA -->
+  <div class="card reveal" style="margin-top:2rem;overflow-x:auto">
+    <div class="sec-eyebrow" style="margin-bottom:.8rem">De los avances a la capacidad instalada</div>
+    <table class="existe-table">
+      <thead><tr><th>✓ Ya existe en la UCE</th><th>→ IALAB UCE permitiría implementar</th></tr></thead>
+      <tbody id="existe-tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="btn-next">
+    <button class="btn-p" onclick="go('problema',document.querySelectorAll('.nav-btn')[2])">Siguiente: El problema que atiende →</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ 2. PROBLEMA ═══════════════ -->
+<div id="page-problema" class="page" style="padding-top:52px;min-height:100vh;background:#F0F5FA">
+<div class="page-inner">
+  <div class="sec-eyebrow reveal">El punto de partida</div>
+  <h2 class="sec-title reveal">El problema que atiende el proyecto</h2>
+  <p class="sec-desc reveal">La UCE ya tiene lineamientos. El problema ahora es la ausencia de infraestructura, licencias, pilotos, soporte, plataforma, investigación aplicada y medición de impacto.</p>
+
+  <div class="card card-navy reveal" style="margin-bottom:1.5rem;padding:1.5rem 1.8rem">
+    <div style="font-size:11px;font-weight:600;color:var(--teal-light);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.8rem">Lo que ya NO es el problema</div>
+    <p style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.7">La UCE ya cuenta con política institucional, código de ética, lineamientos académicos y comisión técnica. <strong style="color:#fff">El desafío ya no es crear normas — es implementarlas con infraestructura real, licencias, plataforma y acompañamiento permanente.</strong></p>
+  </div>
+
+  <div class="prob-grid" id="prob-grid"></div>
+
+  <div class="btn-next">
+    <button class="btn-p" onclick="go('solucion',document.querySelectorAll('.nav-btn')[3])">Siguiente: La solución IALAB UCE →</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ 3. SOLUCIÓN ═══════════════ -->
+<div id="page-solucion" class="page" style="padding-top:52px;min-height:100vh;background:var(--gray-100)">
+<div class="page-inner">
+  <div class="sec-eyebrow reveal">Propuesta central</div>
+  <h2 class="sec-title reveal">Solución: IALAB UCE como ecosistema de IA responsable</h2>
+  <p class="sec-desc reveal">No es solo un aula ni solo un curso. Es un ecosistema institucional que articula acceso, formación, investigación, docencia, recursos, pilotos y evidencia. Haz clic en cada paso para explorar.</p>
+
+  <div class="orbit-hint reveal">👆 Haz clic en cada número del pipeline para ver su detalle</div>
+  <div class="pipeline reveal" id="pipeline"></div>
+  <div id="pipe-detail" class="pipe-detail"></div>
+
+  <!-- MAPA ORBITAL -->
+  <div style="margin-top:2.5rem" class="reveal">
+    <div class="sec-eyebrow">Mapa orbital de componentes</div>
+    <div class="orbit-hint" style="margin-top:.3rem">👆 Haz clic en un número o nodo para ver el componente</div>
+    <canvas id="orbit-canvas"></canvas>
+    <div class="orbit-num-ring" id="orbit-nums"></div>
+    <div class="orbit-detail" id="orbit-detail">
+      <h3>Selecciona un componente</h3>
+      <p>Haz clic en cualquier número o nodo del mapa orbital para ver su descripción.</p>
+    </div>
+  </div>
+
+  <div class="btn-next">
+    <button class="btn-p" onclick="go('componentes',document.querySelectorAll('.nav-btn')[4])">Ver todos los componentes →</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ 4. COMPONENTES ═══════════════ -->
+<div id="page-componentes" class="page" style="padding-top:52px;min-height:100vh;background:#F0F5FA">
+<div class="page-inner">
+  <div class="sec-eyebrow reveal">¿Cómo está organizado?</div>
+  <h2 class="sec-title reveal">Los 8 componentes estratégicos</h2>
+  <p class="sec-desc reveal">Cada componente es un módulo independiente pero articulado. Haz clic en cualquier tarjeta para ver el detalle.</p>
+  <div class="comp-grid" id="comp-grid"></div>
+  <div class="btn-next">
+    <button class="btn-p" onclick="go('ods',document.querySelectorAll('.nav-btn')[5])">Siguiente: ODS y criterios iF →</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ 5. ODS + iF ═══════════════ -->
+<div id="page-ods" class="page" style="padding-top:52px;min-height:100vh;background:var(--gray-100)">
+<div class="page-inner">
+  <div class="sec-eyebrow reveal">Alineación estratégica</div>
+  <h2 class="sec-title reveal">Objetivos de Desarrollo Sostenible · Criterios iF</h2>
+  <p class="sec-desc reveal">IALAB UCE se alinea con los ODS de la Agenda 2030 y responde directamente a los cinco criterios de evaluación del Premio iF Social Impact.</p>
+
+  <!-- ODS -->
+  <div class="sec-eyebrow" style="margin-top:1rem;margin-bottom:.6rem">Objetivos de Desarrollo Sostenible</div>
+  <div class="ods-grid" id="ods-grid"></div>
+
+  <!-- IF CRITERIA -->
+  <div class="sec-eyebrow" style="margin-top:2.2rem;margin-bottom:.6rem">Alineación con los criterios iF Social Impact</div>
+  <div class="if-grid" id="if-grid"></div>
+
+  <!-- DISEÑO DE SERVICIO -->
+  <div class="sec-eyebrow" style="margin-top:2.2rem;margin-bottom:.6rem">IALAB UCE como diseño de servicio institucional</div>
+  <div class="card reveal" style="margin-bottom:1rem">
+    <p style="font-size:14px;color:var(--gray-700);line-height:1.75;margin-bottom:1rem">IALAB UCE no es solo un laboratorio técnico. <strong>Diseña una experiencia de apoyo</strong> para docentes, estudiantes, investigadores y unidades académicas, aplicando principios de diseño de servicio, diseño de experiencia de usuario y diseño de materiales de campaña.</p>
+    <div class="diseno-grid" id="diseno-grid"></div>
+  </div>
+
+  <div class="btn-next">
+    <button class="btn-p" onclick="go('financiamiento',document.querySelectorAll('.nav-btn')[6])">Siguiente: Financiamiento →</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ 6. FINANCIAMIENTO ═══════════════ -->
+<div id="page-financiamiento" class="page" style="padding-top:52px;min-height:100vh;background:#F0F5FA">
+<div class="page-inner">
+  <div class="sec-eyebrow reveal">¿Para qué se necesita?</div>
+  <h2 class="sec-title reveal">Usos del financiamiento</h2>
+
+  <div class="card card-teal reveal" style="margin-bottom:1.5rem">
+    <p style="font-size:14px;color:var(--navy);line-height:1.75"><strong>El financiamiento no se solicita para elaborar política, lineamientos ni código de ética</strong> — eso ya existe o está en proceso de aprobación. Se solicita para implementar el laboratorio: licencias, equipos, plataforma, formación continua, investigación aplicada, pilotos y medición de impacto.</p><p style="font-size:13px;color:var(--teal);font-weight:500;margin-top:.8rem;border-top:1px solid rgba(46,125,143,.2);padding-top:.8rem">📌 La postulación no compromete presupuesto institucional; el financiamiento se gestionaría únicamente en caso de que el proyecto resulte seleccionado.</p>
+  </div>
+
+  <div class="fin-grid" id="fin-grid"></div>
+
+  <div class="btn-next">
+    <button class="btn-p" onclick="go('impacto',document.querySelectorAll('.nav-btn')[7])">Siguiente: Impacto e indicadores →</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ 7. IMPACTO ═══════════════ -->
+<div id="page-impacto" class="page" style="padding-top:52px;min-height:100vh;background:var(--gray-100)">
+<div class="page-inner">
+  <div class="sec-eyebrow reveal">¿Cómo se mide el éxito?</div>
+  <h2 class="sec-title reveal">Impacto e indicadores</h2>
+  <p class="sec-desc reveal">El observatorio de IA partirá de la encuesta diagnóstica ya existente y monitoreará 6 categorías de indicadores de forma periódica.</p>
+
+  <!-- BENEFICIARIOS -->
+  <div class="sec-eyebrow" style="margin-bottom:.6rem">¿A quién beneficia?</div>
+  <div class="benef-grid" id="benef-grid"></div>
+
+  <!-- INDICADORES -->
+  <div class="sec-eyebrow" style="margin-top:2rem;margin-bottom:.6rem">Indicadores del observatorio</div>
+  <div class="ind-grid" id="ind-grid"></div>
+
+  <div class="btn-next">
+    <button class="btn-p" onclick="go('fases',document.querySelectorAll('.nav-btn')[8])">Siguiente: Fases de implementación →</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ 8. FASES ═══════════════ -->
+<div id="page-fases" class="page" style="padding-top:52px;min-height:100vh;background:#F0F5FA">
+<div class="page-inner">
+  <div class="sec-eyebrow reveal">Hoja de ruta</div>
+  <h2 class="sec-title reveal">Fases de implementación</h2>
+  <p class="sec-desc reveal">El proyecto se estructura en tres fases progresivas. Haz clic en cada fase para ver el detalle.</p>
+  <div class="timeline reveal">
+    <div class="tl-item" id="tl0">
+      <div class="tl-dot" onclick="activarFase(0)">C</div>
+      <div class="tl-label">Corto plazo</div>
+      <div class="tl-title">Arranque</div>
+      <ul class="tl-list">
+        <li>Sistematización del diagnóstico</li>
+        <li>Definición operativa del lab</li>
+        <li>Micrositio y repositorio inicial</li>
+        <li>Primer toolkit institucional</li>
+        <li>Talleres especializados</li>
+      </ul>
+    </div>
+    <div class="tl-item" id="tl1">
+      <div class="tl-dot" onclick="activarFase(1)">M</div>
+      <div class="tl-label">Mediano plazo</div>
+      <div class="tl-title">Expansión</div>
+      <ul class="tl-list">
+        <li>Lab físico-digital activo</li>
+        <li>Licencias piloto disponibles</li>
+        <li>Red de docentes promotores</li>
+        <li>Pilotos en facultades</li>
+        <li>Recursos educativos abiertos</li>
+      </ul>
+    </div>
+    <div class="tl-item" id="tl2">
+      <div class="tl-dot" onclick="activarFase(2)">L</div>
+      <div class="tl-label">Largo plazo</div>
+      <div class="tl-title">Consolidación</div>
+      <ul class="tl-list">
+        <li>IA responsable institucionalizada</li>
+        <li>Mejora de calidad educativa</li>
+        <li>UCE referente nacional</li>
+        <li>Reducción de brechas digitales</li>
+        <li>Modelo replicable regional</li>
+      </ul>
+    </div>
+  </div>
+  <div class="fase-detail-box" id="fase-detail"></div>
+  <div class="btn-next">
+    <button class="btn-p" onclick="go('cierre',document.querySelectorAll('.nav-btn')[9])">Ver el cierre del proyecto →</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ 9. CIERRE ═══════════════ -->
+<div id="page-cierre" class="page" style="padding-top:52px;min-height:100vh;background:var(--gray-100)">
+<div class="page-inner">
+  <div class="sec-eyebrow reveal">Resumen ejecutivo</div>
+  <h2 class="sec-title reveal">IALAB UCE: de la regulación a la transformación</h2>
+
+  <div class="tesis-box reveal">
+    <p><strong>La UCE ya inició el proceso de institucionalización de la IA</strong> mediante comisión técnica, capacitación masiva, diagnóstico, política institucional, código de ética, lineamientos académicos y posgrado en IA y Ciencia de Datos. <strong>IALAB UCE es la fase de implementación:</strong> laboratorio, licencias, equipos, plataforma, formación continua, apoyo a investigación, pilotos e indicadores de impacto.</p>
+  </div>
+
+  <div class="card card-navy reveal" style="margin-top:1.5rem;padding:2rem">
+    <div style="font-size:22px;text-align:center;margin-bottom:1rem">⚖️</div>
+    <p style="font-family:var(--font-d);font-size:16px;font-weight:600;color:#E2E8F0;line-height:1.6;text-align:center;max-width:560px;margin:0 auto">"En una universidad pública, la inteligencia artificial no debe ser un privilegio individual ni una amenaza académica. Debe ser una capacidad institucional al servicio de la calidad educativa, la inclusión digital y la innovación responsable."</p>
+    <p style="text-align:center;font-size:12px;color:rgba(255,255,255,.35);margin-top:1rem">IALAB UCE · Vicerrectorado Académico y de Posgrado · UCE · 2025–2026</p>
+  </div>
+
+  <div style="margin-top:2rem;display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+    <button class="btn-p" onclick="go('home',document.querySelectorAll('.nav-btn')[0])">← Volver al inicio</button>
+    <button class="btn-p" style="background:var(--navy)" onclick="go('antecedentes',document.querySelectorAll('.nav-btn')[1])">Antecedentes →</button>
+  </div>
+</div>
+</div>
+
+<footer>Universidad Central del Ecuador · Vicerrectorado Académico y de Posgrado · IALAB UCE 2025–2026</footer>
+
+<script>
+/* ══ DATA ══════════════════════════════════════════════════════════════════════ */
+const ANTECEDENTES=[
+  {icon:"🏛️",title:"Comisión de IA VAP-UCE",text:"Comisión institucional para el uso ético, responsable y académico de la IA en docencia, investigación, vinculación y gestión.",badge:"En funcionamiento"},
+  {icon:"📢",title:"Capacitación masiva",text:"Capacitación en IA generativa y uso ético para docentes, estudiantes e investigadores de la UCE.",badge:"Realizada"},
+  {icon:"📋",title:"Encuesta diagnóstica",text:"Diagnóstico institucional sobre conocimientos, percepciones, usos y necesidades de IA en la comunidad universitaria.",badge:"Completada"},
+  {icon:"📜",title:"Política institucional de IA",text:"Establece alcance transversal en docencia, investigación, vinculación y gestión. La formación en IA debe ser permanente. Instrumento en proceso avanzado de aprobación por el Honorable Consejo Universitario.",badge:"En proceso de aprobación — HCU"},
+  {icon:"⚖️",title:"Código de Ética para IA",text:"Fija principios de responsabilidad, verificación, integridad académica, transparencia, trazabilidad, equidad y juicio humano. Instrumento en proceso avanzado de aprobación por el Honorable Consejo Universitario.",badge:"En proceso de aprobación — HCU"},
+  {icon:"📐",title:"Lineamientos académicos",text:"Operativizan el uso de IA en titulación, declaración de uso, evaluación auténtica, privacidad y responsabilidades de estudiantes y tutores. Instrumento en proceso avanzado de aprobación por el Honorable Consejo Universitario.",badge:"En proceso de aprobación — HCU"},
+  {icon:"🎓",title:"Maestría en IA y Ciencia de Datos",text:"Programa de posgrado activo en la UCE, en cooperación con la Universidad Casa Grande y la Universidad de Vigo.",badge:"Activa"},
+];
+
+const EXISTE=[
+  ["Comisión de IA","Laboratorio físico-digital permanente"],
+  ["Capacitación masiva","Ruta continua de formación y microcredenciales"],
+  ["Encuesta diagnóstica","Observatorio de IA con indicadores periódicos"],
+  ["Política institucional","Servicios para aplicar la política en el aula"],
+  ["Código de ética","Herramientas, asesoría y acompañamiento ético"],
+  ["Lineamientos académicos","Pilotos en aula, titulación e investigación"],
+  ["Maestría IA y Ciencia de Datos","Espacio de práctica, investigación aplicada y transferencia"],
+];
+
+const PROBLEMAS=[
+  {title:"Brecha política / implementación",text:"Los lineamientos y el código de ética son fundamentales, pero requieren infraestructura, licencias, plataforma y acompañamiento para hacerse realidad."},
+  {title:"Acceso desigual a herramientas",text:"Docentes y estudiantes no tienen el mismo acceso a licencias y plataformas de IA, generando desigualdad entre quienes pueden pagar y quienes no."},
+  {title:"Falta de soporte docente",text:"Los profesores necesitan apoyo técnico-pedagógico para rediseñar actividades, evaluaciones y metodologías con IA de manera auténtica."},
+  {title:"Formación sin continuidad",text:"La capacitación masiva fue un gran primer paso, pero se necesita una ruta continua, certificada y diferenciada por perfil y nivel."},
+  {title:"Investigación sin apoyo técnico",text:"La Maestría y los grupos de investigación necesitan un espacio de práctica y soporte metodológico para incorporar IA en sus proyectos."},
+  {title:"Sin evidencia ni observatorio",text:"La Universidad requiere medir el impacto de la IA: usos, brechas, riesgos y resultados — con indicadores periódicos y reportes institucionales."},
+];
+
+const PIPE_STEPS=[
+  {num:"1",icon:"🔬",label:"Lab físico-digital",color:"#0A2342",title:"Laboratorio físico-digital",desc:"Espacio institucional permanente para formación, experimentación, asesoría y producción de recursos. No solo un aula: un ecosistema."},
+  {num:"2",icon:"🔑",label:"Licencias",color:"#1B3F6E",title:"Acceso a licencias de IA",desc:"Gestión y prueba de herramientas de IA para docencia, investigación y gestión, con criterios de seguridad, pertinencia y utilidad académica."},
+  {num:"3",icon:"📚",label:"Docencia",color:"#1D4ED8",title:"Innovación en enseñanza-aprendizaje",desc:"Apoyo al rediseño de actividades, evaluaciones auténticas, retroalimentación, tutoría y accesibilidad educativa con IA responsable."},
+  {num:"4",icon:"🔭",label:"Investigación",color:"#2563EB",title:"Apoyo a investigación y Maestría",desc:"Asesoría técnica para investigadores y la Maestría en IA y Ciencia de Datos: análisis, minería de texto, visualización y redacción responsable."},
+  {num:"5",icon:"🎓",label:"Formación",color:"#3B82F6",title:"Formación continua y microcredenciales",desc:"Ruta de 5 niveles que da continuidad a la capacitación masiva ya iniciada: de alfabetización básica a formación de formadores institucionales."},
+  {num:"6",icon:"🚀",label:"Pilotos",color:"#2E7D8F",title:"Proyectos piloto de IA aplicada",desc:"Pilotos en docencia, titulación, investigación, vinculación y gestión académica, articulados con la política y los lineamientos existentes."},
+  {num:"7",icon:"📊",label:"Observatorio",color:"#1B5E7A",title:"Observatorio de IA en la UCE",desc:"Parte de la encuesta diagnóstica ya realizada. Mide usos, brechas, impactos y riesgos. Produce reportes periódicos para decisiones institucionales."},
+  {num:"8",icon:"📦",label:"Toolkit",color:"#0D7377",title:"Repositorio y toolkit institucional",desc:"Guías, prompts académicos, tutoriales, rúbricas y recursos visuales por facultad. Recursos abiertos, prácticos y actualizados permanentemente."},
+];
+
+const COMPS=[
+  {num:"01",icon:"🔬",title:"Laboratorio físico-digital",
+   text:"Espacio para formación, experimentación, asesoría y producción de recursos.",
+   detail:"Espacio físico y digital para formación, experimentación, asesoría y producción de recursos. Incluye repositorio digital, aula virtual y banco de herramientas. Convierte la IA en una experiencia institucional accesible y no en una práctica aislada.",
+   tags:["Repositorio","Aula virtual","Talleres","Asesorías","Banco de herramientas"],color:"#2E7D8F"},
+  {num:"02",icon:"🔑",title:"Acceso a licencias y herramientas",
+   text:"Gestión de licencias de IA con criterios de utilidad, seguridad y pertinencia.",
+   detail:"Gestionará herramientas de IA para docencia, aprendizaje e investigación: IA generativa, análisis de datos, revisión bibliográfica, programación, visualización, transcripción y accesibilidad académica.",
+   tags:["IA generativa","Análisis de datos","Revisión bibliográfica","Visualización","Accesibilidad"],color:"#1B5E7A"},
+  {num:"03",icon:"📚",title:"Innovación en enseñanza-aprendizaje",
+   text:"Apoyo al rediseño de actividades, evaluaciones y retroalimentación.",
+   detail:"Apoya directamente a docentes y estudiantes: rediseño de actividades, evaluaciones auténticas en contexto de IA, retroalimentación, tutoría, nivelación y declaración transparente del uso de IA en trabajos académicos.",
+   tags:["Rediseño pedagógico","Evaluación auténtica","Retroalimentación","Tutoría","Accesibilidad"],color:"#3BA8BF"},
+  {num:"04",icon:"🔭",title:"Apoyo a investigación y Maestría",
+   text:"Asesoría técnica articulada con la Maestría en IA y Ciencia de Datos.",
+   detail:"Punto de apoyo para investigadores y la Maestría en IA y Ciencia de Datos: asesoría en revisión bibliográfica, minería de texto, análisis de datos, visualización, automatización y redacción académica responsable.",
+   tags:["Minería de texto","Análisis de datos","Maestría IA","Semilleros","Redacción académica"],color:"#1B3A5C"},
+  {num:"05",icon:"🎓",title:"Formación continua y microcredenciales",
+   text:"Ruta de 5 niveles que continúa la capacitación masiva ya iniciada.",
+   detail:"Da continuidad a la capacitación masiva ya realizada. Nivel 1: Alfabetización. Nivel 2: IA en docencia. Nivel 3: IA en investigación. Nivel 4: IA en gestión. Nivel 5: Formación de formadores institucionales.",
+   tags:["5 niveles","Microcredenciales","Docentes","Investigadores","Gestión académica"],color:"#C07A1A"},
+  {num:"06",icon:"📦",title:"Repositorio y toolkit institucional",
+   text:"Guías, prompts académicos, rúbricas y recursos por facultad.",
+   detail:"Producirá recursos prácticos permanentes: guías breves, videos tutoriales, plantillas, rúbricas adaptadas, prompts académicos, casos de uso, recursos por facultad y buenas prácticas.",
+   tags:["Guías","Prompts académicos","Rúbricas","Tutoriales","Buenas prácticas"],color:"#5C7A1B"},
+  {num:"07",icon:"🚀",title:"Proyectos piloto de IA aplicada",
+   text:"Pilotos en docencia, titulación, investigación, vinculación y gestión.",
+   detail:"Pilotos concretos articulados con los lineamientos vigentes: retroalimentación en escritura, análisis en investigación social, simulaciones, tutorías, accesibilidad, apoyo a titulación y proyectos de vinculación.",
+   tags:["Escritura académica","Simulaciones","Tutorías","Titulación","Vinculación"],color:"#7A1B5C"},
+  {num:"08",icon:"📡",title:"Observatorio de IA en la UCE",
+   text:"Parte de la encuesta diagnóstica existente. Mide usos, brechas e impacto.",
+   detail:"Crea un observatorio a partir de la encuesta diagnóstica ya realizada. Mide usos de IA, identifica brechas, analiza riesgos, evalúa impacto y produce reportes periódicos para apoyar decisiones institucionales con evidencia.",
+   tags:["Indicadores","Reportes","Brechas digitales","Encuesta diagnóstica","Evidencia"],color:"#1A4A6B"},
+];
+
+const ODS=[
+  {tipo:"main",num:"4",label:"ODS Principal",title:"Educación de calidad",desc:"IALAB UCE mejora directamente la calidad de la enseñanza, el aprendizaje y la investigación en la universidad pública."},
+  {tipo:"comp",num:"9",label:"ODS Complementario",title:"Industria, innovación e infraestructura",desc:"Infraestructura de IA responsable al servicio de la innovación académica e institucional."},
+  {tipo:"comp",num:"10",label:"ODS Complementario",title:"Reducción de desigualdades",desc:"Acceso equitativo a herramientas de IA para docentes, estudiantes e investigadores de todas las facultades."},
+  {tipo:"comp",num:"5",label:"ODS Complementario",title:"Igualdad de género",desc:"Participación de mujeres, reducción de brechas digitales y liderazgo femenino en IA como criterio explícito del proyecto."},
+];
+
+const IF_CRITERIOS=[
+  {icon:"🎯",criterion:"Problem-solving",title:"Cierra la brecha real",text:"Convierte la política de IA en implementación: licencias, lab, pilotos, formación continua y observatorio."},
+  {icon:"⚖️",criterion:"Moral-ethical standards",title:"Base ética institucional",text:"Se apoya en instrumentos institucionales desarrollados y en proceso de aprobación por las instancias correspondientes."},
+  {icon:"🎨",criterion:"Design relevance",title:"Diseño de servicio institucional",text:"No es solo tecnología. Diseña rutas formativas, servicios de asesoría, experiencias de usuario y recursos visuales."},
+  {icon:"🏗️",criterion:"Reasonable effort",title:"Parte de avances existentes",text:"No empieza de cero. Parte de comisión técnica, capacitación, diagnóstico, política y posgrado ya existentes."},
+  {icon:"✨",criterion:"Beneficial experiences",title:"Transforma la experiencia",text:"Mejora la experiencia de docentes, estudiantes, investigadores y unidades académicas con IA responsable."},
+];
+
+const DISENO=[
+  {icon:"🗺️",title:"Diseño de rutas formativas",text:"Ruta de 5 niveles progresivos de formación con microcredenciales institucionales."},
+  {icon:"🛎️",title:"Diseño de servicios",text:"Servicios de asesoría presenciales y virtuales para docencia, investigación y gestión."},
+  {icon:"📚",title:"Diseño de repositorio",text:"Toolkit institucional con guías, prompts, rúbricas y tutoriales por facultad."},
+  {icon:"👤",title:"Diseño de experiencia",text:"Experiencia de usuario amigable para todos los perfiles de la comunidad."},
+  {icon:"🧪",title:"Diseño de pilotos",text:"Pilotos diseñados por facultad con metodología iterativa y evaluación auténtica."},
+  {icon:"🎨",title:"Diseño visual",text:"Recursos gráficos, infografías y materiales de difusión de la estrategia."},
+  {icon:"📊",title:"Diseño de indicadores",text:"Sistema de seguimiento y observatorio con reportes periódicos de impacto."},
+];
+
+const BENEFICIARIOS=[
+  {icon:"👩‍🏫",title:"Docentes",text:"Formación, herramientas y acompañamiento para transformar la práctica pedagógica."},
+  {icon:"🎓",title:"Estudiantes",text:"Competencias de IA responsable y reducción de brechas de acceso digital."},
+  {icon:"🔬",title:"Investigadores",text:"Apoyo técnico para análisis, revisión y producción académica con IA."},
+  {icon:"🏛️",title:"Facultades y carreras",text:"Recursos organizados para implementar IA de forma articulada."},
+  {icon:"📊",title:"Unidades académicas",text:"Mejora de procesos de gestión, análisis y producción de reportes."},
+  {icon:"🌎",title:"Sociedad",text:"Profesionales preparados para un entorno laboral transformado por IA."},
+];
+
+const FINANCIAMIENTO=[
+  {icon:"🔑",title:"Licencias institucionales de IA",text:"Herramientas de IA generativa, análisis de datos, asistentes y apoyo docente para toda la comunidad."},
+  {icon:"🖥️",title:"Equipamiento del laboratorio",text:"Computadores, pantallas, equipos audiovisuales y dispositivos para talleres y producción."},
+  {icon:"🌐",title:"Plataforma digital IALAB UCE",text:"Micrositio, aula virtual, repositorio institucional, banco de prompts y tablero de indicadores."},
+  {icon:"🎓",title:"Fortalecimiento de la Maestría en IA",text:"Espacio de práctica, investigación aplicada y transferencia tecnológica articulada con el posgrado."},
+  {icon:"📹",title:"Recursos educativos abiertos",text:"Guías, infografías, videos, cursos autoformativos y materiales por área de conocimiento."},
+  {icon:"👨‍🏫",title:"Apoyo a proyectos piloto de docencia",text:"Asistencia técnica para facultades que rediseñen actividades y evaluaciones con IA."},
+  {icon:"🔭",title:"Apoyo a investigación con IA",text:"Asesoría en análisis, minería de texto, visualización y redacción académica responsable."},
+  {icon:"📊",title:"Observatorio de IA e indicadores",text:"Encuestas, indicadores periódicos, reportes y sistematización de experiencias e impacto."},
+];
+
+const INDICADORES=[
+  {label:"Acceso",items:["Licencias disponibles","Usuarios beneficiados","Facultades con acceso","Recursos publicados"]},
+  {label:"Formación",items:["Docentes capacitados","Estudiantes certificados","Investigadores formados","Talleres realizados"]},
+  {label:"Docencia",items:["Asignaturas con piloto","Actividades rediseñadas","Rúbricas utilizadas","Evaluaciones auténticas"]},
+  {label:"Investigación",items:["Proyectos apoyados","Asesorías brindadas","Trabajos fortalecidos","Análisis con IA realizados"]},
+  {label:"Inclusión",items:["Participación de mujeres","Facultades representadas","Perfiles variados","Recursos abiertos disponibles"]},
+  {label:"Institucional",items:["Observatorio activo","Reportes emitidos","Toolkit publicado","Red de promotores creada"]},
+];
+
+const FASES_DETAIL=[
+  {title:"Corto plazo — Arranque",color:"#3BA8BF",body:"Sistematización de la capacitación masiva ya realizada. Definición operativa de IALAB UCE. Creación del micrositio y repositorio inicial. Identificación de herramientas y licencias prioritarias. Primer toolkit institucional y ruta de formación."},
+  {title:"Mediano plazo — Expansión",color:"#2E7D8F",body:"Laboratorio físico-digital en pleno funcionamiento con licencias piloto disponibles. Red de docentes promotores activa. Proyectos piloto por facultad. Recursos educativos abiertos. Integración con aulas virtuales e indicadores iniciales."},
+  {title:"Largo plazo — Consolidación",color:"#1B3A5C",body:"Institucionalización de IA responsable como capacidad permanente. Mejora de calidad educativa e investigativa. Reducción de brechas digitales. Posicionamiento de la UCE como referente nacional en IA responsable. Modelo replicable para otras universidades públicas."},
+];
+
+/* ══ BUILD DOM ══════════════════════════════════════════════════════════════════ */
+// Antecedentes
+const antGrid=document.getElementById('ant-grid');
+ANTECEDENTES.forEach(a=>{
+  const d=document.createElement('div');d.className='ant-card reveal';
+  d.innerHTML=`<span class="ant-icon">${a.icon}</span><div class="ant-title">${a.title}</div><div class="ant-text">${a.text}</div><span class="ant-badge">${a.badge}</span>`;
+  antGrid.appendChild(d);
+});
+
+// Existe table
+const tbody=document.getElementById('existe-tbody');
+EXISTE.forEach(([ex,falta])=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><span class="col-check">✓</span> ${ex}</td><td><span class="col-arrow">→</span> ${falta}</td>`;
+  tbody.appendChild(tr);
+});
+
+// Problemas
+const probGrid=document.getElementById('prob-grid');
+PROBLEMAS.forEach((p,i)=>{
+  const d=document.createElement('div');d.className='prob-card reveal';
+  d.innerHTML=`<div class="prob-num">${i+1}</div><div class="prob-title">${p.title}</div><div class="prob-text">${p.text}</div>`;
+  probGrid.appendChild(d);
+});
+
+// Pipeline
+const pipeline=document.getElementById('pipeline');
+let activePipe=-1;
+PIPE_STEPS.forEach((s,i)=>{
+  const div=document.createElement('div');
+  div.className='pipe-step';div.style.background=s.color;
+  div.innerHTML=`<div class="pipe-num">${s.num}</div><div class="pipe-icon">${s.icon}</div><div class="pipe-lbl">${s.label}</div>`;
+  div.onclick=()=>{
+    document.querySelectorAll('.pipe-step').forEach(p=>p.classList.remove('active'));
+    const detail=document.getElementById('pipe-detail');
+    if(activePipe===i){activePipe=-1;detail.className='pipe-detail';return;}
+    div.classList.add('active');activePipe=i;
+    detail.className='pipe-detail show';
+    detail.innerHTML=`<h4>${s.icon} ${s.num}. ${s.title}</h4><p>${s.desc}</p>`;
+  };
+  pipeline.appendChild(div);
+});
+
+// Orbit number ring
+const numRing=document.getElementById('orbit-nums');
+COMPS.forEach((c,i)=>{
+  const btn=document.createElement('button');btn.className='orbit-num-btn';
+  btn.textContent=i+1;btn.title=c.title;btn.onclick=()=>selectNode(i);
+  numRing.appendChild(btn);
+});
+
+// Componentes
+const compGrid=document.getElementById('comp-grid');
+let activeComp=null,compPanel=null;
+COMPS.forEach((c,i)=>{
+  const d=document.createElement('div');d.className='comp-card reveal';
+  d.innerHTML=`<div class="comp-num-badge">${i+1}</div><span class="comp-icon">${c.icon}</span><div class="comp-title">${c.title}</div><div class="comp-text">${c.text}</div>`;
+  d.onclick=()=>{
+    document.querySelectorAll('.comp-card').forEach(el=>el.classList.remove('active'));
+    if(compPanel){compPanel.remove();compPanel=null;}
+    if(activeComp===i){activeComp=null;return;}
+    d.classList.add('active');activeComp=i;
+    compPanel=document.createElement('div');compPanel.className='comp-panel show';
+    compPanel.innerHTML=`<h3>${c.icon} ${c.num} — ${c.title}</h3><p>${c.detail}</p><div class="tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
+    d.after(compPanel);setTimeout(()=>compPanel.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
+  };
+  compGrid.appendChild(d);
+});
+
+// ODS
+const odsGrid=document.getElementById('ods-grid');
+ODS.forEach(o=>{
+  const d=document.createElement('div');
+  d.className=`ods-card ${o.tipo==='main'?'ods-main':'ods-comp'} reveal`;
+  d.innerHTML=`<div class="ods-num">${o.num}</div><div class="ods-label">${o.label}</div><div class="ods-title">ODS ${o.num}: ${o.title}</div><div class="ods-desc">${o.desc}</div>`;
+  odsGrid.appendChild(d);
+});
+
+// iF
+const ifGrid=document.getElementById('if-grid');
+IF_CRITERIOS.forEach(f=>{
+  const d=document.createElement('div');d.className='if-card reveal';
+  d.innerHTML=`<span class="if-icon">${f.icon}</span><div class="if-criterion">${f.criterion}</div><div class="if-title">${f.title}</div><div class="if-text">${f.text}</div>`;
+  ifGrid.appendChild(d);
+});
+
+// Diseño
+const disenoGrid=document.getElementById('diseno-grid');
+DISENO.forEach(s=>{
+  const d=document.createElement('div');d.className='diseno-card';
+  d.innerHTML=`<span class="diseno-icon">${s.icon}</span><div class="diseno-title">${s.title}</div><div class="diseno-text">${s.text}</div>`;
+  disenoGrid.appendChild(d);
+});
+
+// Beneficiarios
+const benefGrid=document.getElementById('benef-grid');
+BENEFICIARIOS.forEach(b=>{
+  const d=document.createElement('div');d.className='benef-card reveal';
+  d.innerHTML=`<span class="benef-icon">${b.icon}</span><div class="benef-title">${b.title}</div><div class="benef-text">${b.text}</div>`;
+  benefGrid.appendChild(d);
+});
+
+// Financiamiento
+const finGrid=document.getElementById('fin-grid');
+FINANCIAMIENTO.forEach(f=>{
+  const d=document.createElement('div');d.className='fin-card reveal';
+  d.innerHTML=`<span class="fin-icon">${f.icon}</span><div class="fin-title">${f.title}</div><div class="fin-text">${f.text}</div>`;
+  finGrid.appendChild(d);
+});
+
+// Indicadores
+const indGrid=document.getElementById('ind-grid');
+INDICADORES.forEach(g=>{
+  const d=document.createElement('div');d.className='ind-card reveal';
+  d.innerHTML=`<div class="ind-label">${g.label}</div>${g.items.map(it=>`<div class="ind-item">${it}</div>`).join('')}`;
+  indGrid.appendChild(d);
+});
+
+/* ══ NAVIGATION ═══════════════════════════════════════════════════════════════ */
+function go(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(()=>{
+    document.querySelectorAll('#page-'+id+' .reveal').forEach(el=>{
+      el.classList.remove('in');setTimeout(()=>el.classList.add('in'),60);
+    });
+    if(id==='home')animCounters();
+    if(id==='solucion')initOrbit();
+  },80);
+}
+
+/* ══ FASES ════════════════════════════════════════════════════════════════════ */
+function activarFase(i){
+  [0,1,2].forEach(j=>document.getElementById('tl'+j).classList.toggle('active',j===i));
+  const fd=document.getElementById('fase-detail');
+  const f=FASES_DETAIL[i];
+  fd.style.display='block';
+  fd.innerHTML=`<div style="font-size:11px;font-weight:700;color:${f.color};text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem">${f.title}</div><p style="font-size:13px;color:rgba(255,255,255,.78);line-height:1.7">${f.body}</p>`;
+}
+
+/* ══ COUNTERS ════════════════════════════════════════════════════════════════ */
+function animCounters(){
+  document.querySelectorAll('.stat-n[data-target]').forEach(el=>{
+    const t=parseInt(el.dataset.target);let v=0,s=null;
+    const step=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/700,1);el.textContent=Math.round(p*t);if(p<1)requestAnimationFrame(step);};
+    requestAnimationFrame(step);
+  });
+}
+const co=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(!e.isIntersecting)return;const el=e.target,t=parseInt(el.dataset.target);let s=null;
+    const step=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/700,1);el.textContent=Math.round(p*t);if(p<1)requestAnimationFrame(step);};
+    requestAnimationFrame(step);co.unobserve(el);});
+},{threshold:.5});
+document.querySelectorAll('.stat-n[data-target]').forEach(el=>co.observe(el));
+
+/* ══ REVEAL OBSERVER ════════════════════════════════════════════════════════ */
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ══ HERO CANVAS ════════════════════════════════════════════════════════════ */
+(function(){
+  const cvs=document.getElementById('hero-canvas');
+  if(!cvs)return;const ctx=cvs.getContext('2d');let W,H,pts=[];
+  function resize(){W=cvs.offsetWidth;H=cvs.offsetHeight;cvs.width=W;cvs.height=H;}
+  resize();window.addEventListener('resize',()=>{resize();makePts();});
+  function makePts(){pts=Array.from({length:70},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+1}));}
+  makePts();
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(59,168,191,.35)';ctx.fill();});
+    pts.forEach((a,i)=>pts.forEach((b,j)=>{if(j<=i)return;const d=Math.hypot(a.x-b.x,a.y-b.y);if(d<120){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(59,168,191,${.12*(1-d/120)})`;ctx.lineWidth=.6;ctx.stroke();}}));
+    requestAnimationFrame(draw);
+  }draw();
+})();
+
+/* ══ ORBIT CANVAS ═══════════════════════════════════════════════════════════ */
+let orbitInitialized=false;
+function initOrbit(){
+  if(orbitInitialized)return;orbitInitialized=true;
+  const cvs=document.getElementById('orbit-canvas');
+  if(!cvs)return;const ctx=cvs.getContext('2d');
+  const detailBox=document.getElementById('orbit-detail');
+  let W,H,frame=0,activeIdx=-1;
+  function resize(){const r=cvs.parentElement.getBoundingClientRect();W=Math.min(r.width,700);H=Math.min(W,460);cvs.width=W;cvs.height=H;cvs.style.height=H+'px';}
+  resize();window.addEventListener('resize',resize);
+  const nodes=COMPS.map((c,i)=>{const a=(i/COMPS.length)*Math.PI*2-Math.PI/2;return{label:i+1,icon:c.icon,title:c.title,baseA:a,pulse:Math.random()*Math.PI*2,color:c.color,x:0,y:0};});
+  function selectNode(i){
+    activeIdx=(activeIdx===i)?-1:i;
+    document.querySelectorAll('.orbit-num-btn').forEach((b,j)=>b.classList.toggle('active',j===activeIdx));
+    if(activeIdx<0){detailBox.className='orbit-detail';detailBox.innerHTML='<h3>Selecciona un componente</h3><p>Haz clic en cualquier número o nodo del mapa orbital para ver su descripción.</p>';}
+    else{const c=COMPS[activeIdx];detailBox.className='orbit-detail has-content';detailBox.innerHTML=`<h3>${c.icon} ${c.num} — ${c.title}</h3><p>${c.detail}</p><div class="tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;}
+  }
+  window.selectNode=selectNode;
+  function draw(){
+    ctx.clearRect(0,0,W,H);const cx=W/2,cy=H/2,R=Math.min(W,H)*.37;
+    const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R*.8);g.addColorStop(0,'rgba(27,58,92,.07)');g.addColorStop(1,'rgba(27,58,92,0)');ctx.beginPath();ctx.arc(cx,cy,R*.8,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+    ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.strokeStyle='rgba(46,125,143,.15)';ctx.lineWidth=1;ctx.setLineDash([5,9]);ctx.stroke();ctx.setLineDash([]);
+    nodes.forEach((n,i)=>{const a=n.baseA+frame*.0035+Math.sin(frame*.007+i)*.06;n.x=cx+Math.cos(a)*R;n.y=cy+Math.sin(a)*R;n.pulse+=.04;});
+    if(activeIdx>=0){const an=nodes[activeIdx];nodes.forEach((n,i)=>{if(i===activeIdx)return;ctx.beginPath();ctx.moveTo(an.x,an.y);ctx.lineTo(n.x,n.y);ctx.strokeStyle='rgba(59,168,191,.1)';ctx.lineWidth=.8;ctx.stroke();});}
+    else{nodes.forEach((n,i)=>nodes.forEach((m,j)=>{if(j<=i)return;const d=Math.hypot(n.x-m.x,n.y-m.y);if(d<W*.38){ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(m.x,m.y);ctx.strokeStyle='rgba(46,125,143,.06)';ctx.lineWidth=.6;ctx.stroke();}}));}
+    const cp=1+Math.sin(frame*.05)*.05;ctx.beginPath();ctx.arc(cx,cy,30*cp,0,Math.PI*2);ctx.fillStyle='rgba(27,58,92,.1)';ctx.fill();ctx.beginPath();ctx.arc(cx,cy,20,0,Math.PI*2);ctx.fillStyle='#1B3A5C';ctx.fill();ctx.fillStyle='#fff';ctx.font='600 8.5px Inter,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('IALAB',cx,cy-3.5);ctx.fillText('UCE',cx,cy+6);
+    nodes.forEach((n,i)=>{const sz=16+Math.sin(n.pulse)*2.5,isA=i===activeIdx;ctx.beginPath();ctx.arc(n.x,n.y,sz,0,Math.PI*2);ctx.fillStyle=n.color;ctx.globalAlpha=isA?.95:.7;ctx.fill();ctx.globalAlpha=1;if(isA){ctx.beginPath();ctx.arc(n.x,n.y,sz+6,0,Math.PI*2);ctx.strokeStyle=n.color;ctx.lineWidth=1.5;ctx.globalAlpha=.28;ctx.stroke();ctx.globalAlpha=1;}ctx.font=`700 ${isA?12:11}px Inter,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='rgba(255,255,255,.95)';ctx.fillText(n.label,n.x,n.y);});
+    nodes.forEach((n,i)=>{const a=n.baseA+frame*.0035+Math.sin(frame*.007+i)*.06,lr=R+33,lx=cx+Math.cos(a)*lr,ly=cy+Math.sin(a)*lr;ctx.font=`${activeIdx===i?'600':'400'} 10px Inter,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=activeIdx===i?'#1B3A5C':'rgba(55,65,81,.65)';const words=COMPS[i].title.split(' '),l1=words.slice(0,2).join(' '),l2=words.slice(2).join(' ');ctx.fillText(l1,lx,ly-(l2?7:0));if(l2)ctx.fillText(l2,lx,ly+8);});
+    frame++;requestAnimationFrame(draw);
+  }draw();
+  cvs.addEventListener('click',e=>{const r=cvs.getBoundingClientRect(),mx=(e.clientX-r.left)*(cvs.width/r.width),my=(e.clientY-r.top)*(cvs.height/r.height);let hit=-1;nodes.forEach((n,i)=>{if(Math.hypot(mx-n.x,my-n.y)<22)hit=i;});if(hit>=0)selectNode(hit);});
+}
+// Wire orbit num buttons (page-solucion scope)
+document.querySelectorAll('.orbit-num-btn').forEach((b,i)=>b.onclick=()=>{if(window.selectNode)window.selectNode(i);});
+</script>
+</body>
+</html>
